@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AgroVision | AI Crop Health Intelligence</title>
+<meta name="theme-color" content="#07130f"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg2:#0d1713;--glass:rgba(8,21,17,.55);--gb:rgba(117,255,206,.18);--gbh:rgba(117,255,206,.42);
+--g4:#66f7b2;--g5:#2ad98a;--g6:#15b56d;--neon:#75ffb5;--glow:rgba(117,255,181,.4);--teal:#2dd4bf;
+--tx:#f0fdf4;--tx2:#86efac;--mut:#6b9a82;--r-sm:8px;--r-md:14px;--r-lg:22px;
+--body:'Inter','Nirmala UI','Noto Sans Devanagari',system-ui,'Segoe UI',Arial,sans-serif;
+--disp:'Syne','Inter','Nirmala UI','Noto Sans Devanagari',system-ui,'Segoe UI',Arial,sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--body);color:var(--tx);min-height:100vh;overflow-x:hidden;line-height:1.6;
+background:radial-gradient(circle at 12% 12%,rgba(42,217,138,.18),transparent 20%),radial-gradient(circle at 85% 8%,rgba(89,240,255,.12),transparent 18%),
+radial-gradient(circle at 70% 85%,rgba(245,158,11,.10),transparent 20%),linear-gradient(180deg,#020b09,#071610 35%,#08140f)}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-size:42px 42px;
+background-image:linear-gradient(rgba(117,255,181,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(117,255,181,.035) 1px,transparent 1px);
+mask-image:radial-gradient(circle at center,black 55%,transparent 100%)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--g6);border-radius:3px}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,.upload-zone:focus-visible{outline:2px solid var(--neon);outline-offset:3px}
+
+/* navbar */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:74px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;
+background:rgba(4,12,10,.72);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(117,255,181,.12)}
+.nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.nav-logo{width:42px;height:42px;flex:0 0 auto}
+.nav-title{font-family:var(--disp);font-weight:800;font-size:1.4rem;letter-spacing:.04em;background:linear-gradient(135deg,#fff,var(--neon));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-links{display:flex;gap:6px;list-style:none}
+.nav-links a{color:var(--tx2);text-decoration:none;font-size:.875rem;font-weight:600;padding:10px 17px;border-radius:12px;border:1px solid transparent;transition:.25s}
+.nav-links a:hover{color:#03130d;background:linear-gradient(135deg,var(--neon),#a4ffc8)}
+.nav-right{display:flex;gap:10px;align-items:center}
+.lang-select{background:rgba(255,255,255,.05);color:var(--tx);border:1px solid var(--gb);border-radius:12px;padding:8px 12px;font:inherit;font-size:.85rem}
+.lang-select option{color:#000}
+main{padding-top:70px;position:relative;z-index:1}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 28px;border-radius:var(--r-md);font:600 .9rem var(--body);cursor:pointer;transition:.25s;border:none;text-decoration:none}
+.btn-primary{background:linear-gradient(135deg,#7cffba,#52f0a7 30%,#9fe7ff);color:#061b12;box-shadow:0 12px 28px rgba(117,255,181,.25);border:1px solid rgba(255,255,255,.2)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(117,255,181,.32)}
+.btn-secondary{background:rgba(255,255,255,.03);color:var(--tx);border:1px solid rgba(117,255,181,.25)}
+.btn-secondary:hover{border-color:var(--neon);color:var(--neon);background:rgba(57,255,138,.08)}
+.btn-ghost{background:transparent;color:var(--tx2);border:1px solid transparent}
+.btn-ghost:hover{color:var(--neon);border-color:var(--gb)}
+.btn-sm{padding:8px 18px;font-size:.8rem}.btn-lg{padding:16px 36px;font-size:1rem}.btn-full{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+
+/* hero */
+.hero{min-height:min(760px,calc(100svh - 74px));display:flex;align-items:center;position:relative;overflow:hidden;
+padding:clamp(4rem,9vh,7rem) max(2rem,calc((100vw - 1240px)/2));border-bottom:1px solid rgba(255,255,255,.1)}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,13,10,.94),rgba(3,13,10,.7) 50%,rgba(3,13,10,.2)),
+linear-gradient(0deg,rgba(3,13,10,.5),transparent 50%),url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=2000&q=85") center 56%/cover,#06140f}
+.hero-content{position:relative;z-index:2;width:min(100%,760px)}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;color:#d7e9dc;font-size:.78rem;font-weight:600;letter-spacing:.12em;margin-bottom:1.4rem}
+.hero-badge i{width:7px;height:7px;border-radius:50%;background:var(--neon);box-shadow:0 0 12px var(--glow)}
+.hero-title{font-family:var(--disp);font-size:clamp(3.2rem,6vw,5.6rem);font-weight:800;line-height:1;margin-bottom:1.3rem;color:#aaf1c2;text-shadow:0 4px 34px rgba(117,255,181,.16)}
+.hero-title small{display:block;margin-top:.35em;color:#f2f5ef;font:500 clamp(1.3rem,3vw,2.1rem)/1.3 var(--body);text-shadow:none}
+.hero-desc{font-size:1.04rem;color:rgba(241,248,242,.82);max-width:560px;margin-bottom:2rem;line-height:1.8}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap}
+.hero-stats{display:flex;margin-top:2.6rem;flex-wrap:wrap;row-gap:1rem}
+.stat{padding:0 1.5rem;border-left:1px solid rgba(255,255,255,.28)}.stat:first-child{padding-left:0;border:0}
+.stat b{display:block;font-family:var(--disp);font-size:1.2rem}
+.stat span{font-size:.72rem;color:rgba(241,248,242,.65);letter-spacing:.04em}
+
+/* cards + sections */
+.glass-card{background:var(--glass);border:1px solid var(--gb);border-radius:var(--r-lg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:border-color .4s,box-shadow .4s}
+.glass-card:hover{border-color:var(--gbh);box-shadow:0 14px 46px rgba(13,30,24,.72),0 0 34px rgba(117,255,181,.1)}
+.card-header{padding:1.5rem 1.5rem 0;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.card-title{font:700 1.15rem var(--disp);display:flex;align-items:center;gap:10px}
+.card-title .icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;background:rgba(57,255,138,.15)}
+.card-body{padding:1.5rem}
+.section{padding:4rem 2rem;max-width:1200px;margin:0 auto}
+.section-header{text-align:center;margin-bottom:2.6rem}
+.section-badge{display:inline-flex;padding:4px 14px;border-radius:999px;background:rgba(57,255,138,.08);border:1px solid rgba(57,255,138,.2);font-size:.8rem;color:var(--neon);font-weight:600;margin-bottom:1rem}
+.section-title{font-family:var(--disp);font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;margin-bottom:.7rem;background:linear-gradient(135deg,var(--g4),var(--neon),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.3}
+.section-desc{color:var(--tx2);max-width:600px;margin:0 auto}
+.dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start}
+
+/* upload */
+.upload-zone{border:2px dashed var(--gb);border-radius:var(--r-lg);padding:3rem 2rem;text-align:center;cursor:pointer;transition:.25s;background:rgba(57,255,138,.02)}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--neon);background:rgba(57,255,138,.06);box-shadow:0 0 30px rgba(57,255,138,.15)}
+.upload-icon{font-size:3.4rem;display:block;margin-bottom:1rem;filter:drop-shadow(0 0 20px var(--glow))}
+.upload-zone p{color:var(--tx2);font-size:.92rem}.upload-hint{color:var(--mut)!important;font-size:.8rem!important;margin-top:.5rem}
+.upload-preview{position:relative;border-radius:var(--r-md);overflow:hidden;display:none}
+.upload-preview img{width:100%;max-height:320px;object-fit:cover;display:block;border-radius:var(--r-md)}
+.remove-btn{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;background:rgba(239,68,68,.85);border:0;color:#fff;cursor:pointer;font-size:15px}
+.tips-box{margin-top:1rem;padding:10px 12px;background:rgba(255,255,255,.03);border-radius:var(--r-sm);font-size:.8rem;color:var(--mut)}
+.tips-box strong{color:var(--tx2)}
+
+/* results */
+.results-panel{position:relative;overflow:hidden}
+.loading-overlay{position:absolute;inset:0;background:rgba(6,13,11,.82);backdrop-filter:blur(4px);display:none;flex-direction:column;align-items:center;justify-content:center;gap:1rem;z-index:10}
+.spinner{width:50px;height:50px;border:3px solid rgba(57,255,138,.1);border-top-color:var(--neon);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.result-header{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.result-plant-name{font:800 1.7rem/1.25 var(--disp)}
+.result-plant-name small{display:block;font:400 .95rem var(--body);color:var(--tx2);margin-top:2px}
+.status-badge{padding:6px 16px;border-radius:999px;font-size:.82rem;font-weight:700}
+.status-healthy{background:rgba(34,197,94,.2);color:var(--g4);border:1px solid rgba(34,197,94,.3)}
+.status-diseased{background:rgba(239,68,68,.2);color:#f87171;border:1px solid rgba(239,68,68,.3)}
+.confidence-label{display:flex;justify-content:space-between;font-size:.82rem;color:var(--tx2);margin-bottom:6px}
+.confidence-track{height:8px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden}
+.confidence-fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--g5),var(--neon));box-shadow:0 0 10px var(--glow);transition:width 1s cubic-bezier(.4,0,.2,1)}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin:1.2rem 0}
+.info-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:var(--r-sm);padding:12px}
+.info-label{font-size:.74rem;color:var(--mut);margin-bottom:4px}.info-value{font-weight:600}
+.detail-block{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-left:3px solid var(--neon);border-radius:var(--r-sm);padding:12px 14px;margin-top:12px;font-size:.92rem;color:var(--tx2);line-height:1.7}
+.detail-block h4{font:700 .88rem var(--disp);color:var(--tx);margin-bottom:4px}
+.alt-list{list-style:none;margin-top:6px}
+.alt-list li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.88rem}
+.alt-list li:last-child{border:0}.alt-pct{color:var(--neon);font-weight:600;white-space:nowrap}
+.notice{padding:14px 16px;border-radius:var(--r-sm);font-size:.9rem;line-height:1.7}.notice b{display:block;margin-bottom:2px}
+.notice-warn{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.25);color:#fbbf24}
+.notice-error{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.25);color:#f87171}
+.disclaimer{margin-top:1rem;font-size:.76rem;color:var(--mut)}
+.empty-state{text-align:center;padding:3rem 1.5rem;color:var(--mut)}.empty-icon{font-size:3rem;margin-bottom:1rem;opacity:.5}
+
+/* how it works */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem}
+.feature-card{padding:1.5rem}
+.feature-icon{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:1rem;background:rgba(34,197,94,.15)}
+.feature-title{font:700 1rem var(--disp);margin-bottom:.5rem}.feature-desc{font-size:.9rem;color:var(--tx2)}
+
+/* login overlay */
+#auth-overlay{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(2,9,7,.92);backdrop-filter:blur(10px);overflow:auto}
+.auth-box{width:min(100%,420px);padding:2rem}
+.auth-box h2{font:800 1.6rem/1.3 var(--disp);margin-bottom:.3rem}
+.auth-box p.sub{color:var(--tx2);font-size:.9rem}
+.auth-tabs{display:flex;gap:8px;margin:1.2rem 0 .4rem}.auth-tabs .btn{flex:1}
+.auth-box label{display:block;font-size:.82rem;color:var(--tx2);margin:12px 0 4px}
+.auth-box input{width:100%;padding:12px 14px;border-radius:var(--r-sm);border:1px solid var(--gb);background:rgba(0,0,0,.35);color:var(--tx);font:inherit}
+.auth-error{color:#f87171;font-size:.86rem;min-height:22px;margin:10px 0 4px}
+
+/* toast + footer */
+.toast-container{position:fixed;bottom:2rem;right:2rem;z-index:3000;display:flex;flex-direction:column;gap:8px}
+.toast{padding:12px 20px;border-radius:var(--r-md);font-size:.88rem;font-weight:500;backdrop-filter:blur(20px);min-width:230px;cursor:pointer;animation:tin .3s ease}
+@keyframes tin{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+.toast-success{background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.3);color:var(--g4)}
+.toast-error{background:rgba(239,68,68,.2);border:1px solid rgba(239,68,68,.3);color:#f87171}
+footer{border-top:1px solid var(--gb);padding:2rem;text-align:center;color:var(--mut);font-size:.82rem;position:relative;z-index:1}
+footer .brand{color:var(--neon);font:700 1rem var(--disp)}footer strong{color:var(--tx);font-weight:600}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s,transform .7s}.reveal.visible{opacity:1;transform:none}
+
+@media(max-width:1024px){.dashboard-grid{grid-template-columns:1fr}}
+@media(max-width:768px){.navbar{padding:0 1rem}.nav-links{display:none}.section{padding:3rem 1rem}.hero{padding:4rem 1.25rem}}
+@media(max-width:520px){.hero-actions .btn{width:100%}.stat{padding:0 .7rem}.toast-container{left:1rem;right:1rem}.nav-title{font-size:1.15rem}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN / REGISTER -->
+<div id="auth-overlay">
+  <div class="glass-card auth-box">
+    <h2 data-i="authTitle"></h2>
+    <p class="sub" data-i="authSub"></p>
+    <div class="auth-tabs">
+      <button class="btn btn-secondary btn-sm" id="tab-login" type="button" data-i="login"></button>
+      <button class="btn btn-ghost btn-sm" id="tab-reg" type="button" data-i="register"></button>
+    </div>
+    <form id="auth-form">
+      <div id="name-box" style="display:none"><label data-i="name"></label><input id="a-name" type="text" autocomplete="name"></div>
+      <label data-i="email"></label><input id="a-email" type="email" autocomplete="email" required>
+      <label data-i="password"></label><input id="a-pw" type="password" required>
+      <div class="auth-error" id="auth-error" role="alert"></div>
+      <button class="btn btn-primary btn-full" id="auth-submit" type="submit"></button>
+    </form>
+  </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<nav class="navbar">
+  <a href="#hero" class="nav-brand">
+    <svg class="nav-logo" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#0b1a15" stroke="#75ffb5" stroke-opacity=".5" stroke-width="2"/><path d="M14 33c0-11 7-17 20-17 0 12-6 19-17 19-1 0-2 0-3-2z" fill="#75ffb5"/><path d="M15 34c6-6 11-10 17-15" stroke="#0b1a15" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+    <span class="nav-title">AgroVision</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#analyze" data-i="nav1"></a></li>
+    <li><a href="#how" data-i="nav2"></a></li>
+  </ul>
+  <div class="nav-right">
+    <select id="lang" class="lang-select" aria-label="Language">
+      <option value="en">English</option><option value="ne">नेपाली</option><option value="hi">हिन्दी</option>
+    </select>
+    <button class="btn btn-secondary btn-sm" id="logout-btn" style="display:none" data-i="logout"></button>
+  </div>
+</nav>
+
+<main>
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-badge"><i></i><span data-i="badge"></span></div>
+      <h1 class="hero-title">AgroVision<small data-i="tag"></small></h1>
+      <p class="hero-desc" data-i="desc"></p>
+      <div class="hero-actions">
+        <a href="#analyze" class="btn btn-primary btn-lg" data-i="cta1"></a>
+        <a href="#how" class="btn btn-secondary btn-lg" data-i="cta2"></a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><b data-i="s1"></b><span data-i="s1l"></span></div>
+        <div class="stat"><b data-i="s2"></b><span data-i="s2l"></span></div>
+        <div class="stat"><b data-i="s3"></b><span data-i="s3l"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section reveal" id="analyze">
+    <div class="section-header">
+      <div class="section-badge" data-i="secBadge"></div>
+      <h2 class="section-title" data-i="secTitle"></h2>
+      <p class="section-desc" data-i="secDesc"></p>
+    </div>
+    <div class="dashboard-grid">
+      <div class="glass-card">
+        <div class="card-header"><div class="card-title"><div class="icon">📸</div><span data-i="upT"></span></div></div>
+        <div class="card-body">
+          <div class="upload-zone" id="upload-zone" role="button" tabindex="0">
+            <span class="upload-icon">🌿</span>
+            <p data-i="drag"></p>
+            <p class="upload-hint" data-i="or"></p>
+            <p class="upload-hint" style="color:var(--neon)!important" data-i="paste"></p>
+          </div>
+          <div class="upload-preview" id="image-preview">
+            <img id="preview-img" alt="" src=""/>
+            <button class="remove-btn" id="remove-btn" aria-label="Remove">✕</button>
+          </div>
+          <input type="file" id="file-input" accept="image/*" style="display:none"/>
+          <button id="analyze-btn" class="btn btn-primary btn-full" disabled style="margin-top:1rem" data-i="analyzeBtn"></button>
+          <div class="tips-box">
+            <strong data-i="tipsT"></strong><br>
+            <span data-i="tip1"></span><br><span data-i="tip2"></span><br><span data-i="tip3"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card results-panel">
+        <div class="card-header">
+          <div class="card-title"><div class="icon">📊</div><span data-i="resT"></span></div>
+          <button class="btn btn-ghost btn-sm" id="clear-btn" data-i="clear"></button>
+        </div>
+        <div class="card-body" style="position:relative;min-height:380px">
+          <div class="loading-overlay" id="loading-overlay"><div class="spinner"></div><div style="color:var(--tx2)" data-i="loading"></div></div>
+          <div id="results-content"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section reveal" id="how" style="padding-top:2rem">
+    <div class="section-header">
+      <div class="section-badge" data-i="howBadge"></div>
+      <h2 class="section-title" data-i="howT"></h2>
+    </div>
+    <div class="features-grid">
+      <div class="glass-card feature-card"><div class="feature-icon">📸</div><div class="feature-title" data-i="f1t"></div><p class="feature-desc" data-i="f1d"></p></div>
+      <div class="glass-card feature-card"><div class="feature-icon">🧠</div><div class="feature-title" data-i="f2t"></div><p class="feature-desc" data-i="f2d"></p></div>
+      <div class="glass-card feature-card"><div class="feature-icon">🩺</div><div class="feature-title" data-i="f3t"></div><p class="feature-desc" data-i="f3d"></p></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div><span class="brand">AgroVision</span> — Crop health intelligence</div>
+  <div style="margin-top:6px">AI results are decision support, not a substitute for diagnosis by a qualified local agriculture professional.</div>
+  <div style="margin-top:10px">Developed by <strong>Rijan Basnet</strong>, <strong>Rajit Prajapati</strong>, and <strong>Sujal Karanjit</strong>.</div>
+  <div style="margin-top:4px;font-size:.74rem">© 2026 AgroVision. All rights reserved.</div>
+</footer>
+
+<script>
+/* ============ translations (English / Nepali / Hindi) ============ */
+const TX = {
+ en:{authTitle:"Welcome to AgroVision",authSub:"Log in to scan leaves and save your results.",login:"Log in",register:"Create account",
+  name:"Full name",email:"Email",password:"Password (6+ characters)",logout:"Log out",
+  e_login:"Wrong email or password.",e_exists:"This email is already registered. Log in instead.",
+  e_invalid:"Check your details. The password needs 6 or more characters.",e_net:"Something went wrong. Try again.",
+  nav1:"Leaf analysis",nav2:"How it works",badge:"Plant health intelligence",tag:"See crop health clearly.",
+  desc:"Turn a leaf photo into a clear disease check, confidence score and practical next step. Built for pepper, potato and tomato crops.",
+  cta1:"Analyze a leaf",cta2:"How it works",s1:"3 crops",s1l:"Pepper · potato · tomato",s2:"3 languages",s2l:"English · Nepali · Hindi",s3:"On-server",s3l:"No external APIs",
+  secBadge:"🔬 Leaf analysis",secTitle:"Upload and analyze",secDesc:"Use a clear photo of a single leaf on a plain background.",
+  upT:"Upload image",drag:"Drag and drop a leaf photo here",or:"or click to choose • JPG, PNG, WEBP",paste:"You can also paste with Ctrl+V",
+  tipsT:"For best results:",tip1:"🍃 Fill the frame with one leaf",tip2:"☀️ Even light, no heavy shadows",tip3:"🧾 Plain background (paper, hand or table)",
+  resT:"Analysis results",clear:"Clear",loading:"Analyzing your leaf...",analyzeBtn:"🔬 Analyze leaf",checking:"Analyzing...",
+  howBadge:"✨ How it works",howT:"From photo to diagnosis",
+  f1t:"Upload a leaf photo",f1d:"Choose or drop a photo. It is sent only to this server.",
+  f2t:"The CNN reads the leaf",f2d:"Our own trained neural network compares the leaf with known crop conditions.",
+  f3t:"Get disease and advice",f3d:"See the disease, how sure the model is, and what to do, in your language.",
+  empty:"Upload a leaf image and click Analyze to see the disease and advice.",notRec:"Leaf not recognized",
+  unknown:"This does not look like a potato, tomato or pepper leaf, or the model is not sure. Upload a clear close-up of one leaf.",
+  confidence:"Confidence",plant:"Plant",disease:"Disease",status:"Status",healthy:"Healthy",diseased:"Diseased",
+  advice:"What to do",other:"Other possibilities",note:"AI guidance only. Confirm with your local agriculture office before spraying.",
+  done:"Analysis complete",failed:"Analysis failed",badFile:"Please choose an image file (JPG, PNG or WEBP)."},
+ ne:{authTitle:"एग्रोभिजनमा स्वागत छ",authSub:"पात जाँच्न र नतिजा सुरक्षित राख्न लगइन गर्नुहोस्।",login:"लगइन",register:"खाता बनाउनुहोस्",
+  name:"पूरा नाम",email:"इमेल",password:"पासवर्ड (६ वा बढी अक्षर)",logout:"लगआउट",
+  e_login:"इमेल वा पासवर्ड मिलेन।",e_exists:"यो इमेल पहिले नै दर्ता छ। लगइन गर्नुहोस्।",
+  e_invalid:"विवरण जाँच्नुहोस्। पासवर्ड ६ वा बढी अक्षरको हुनुपर्छ।",e_net:"केही गडबड भयो। फेरि प्रयास गर्नुहोस्।",
+  nav1:"पात विश्लेषण",nav2:"कसरी काम गर्छ",badge:"बिरुवाको स्वास्थ्य जानकारी",tag:"बालीको स्वास्थ्य स्पष्ट देखौं।",
+  desc:"पातको फोटोबाट रोगको स्पष्ट जाँच, विश्वसनीयता र अर्को उपाय पाउनुहोस्। खुर्सानी, आलु र गोलभेडा बालीका लागि बनाइएको।",
+  cta1:"पात जाँच्नुहोस्",cta2:"कसरी काम गर्छ",s1:"३ बाली",s1l:"खुर्सानी · आलु · गोलभेडा",s2:"३ भाषा",s2l:"English · नेपाली · हिन्दी",s3:"आफ्नै सर्भरमा",s3l:"बाहिरी API छैन",
+  secBadge:"🔬 पात विश्लेषण",secTitle:"फोटो राखेर जाँच्नुहोस्",secDesc:"सादा पृष्ठभूमिमा एउटा पातको स्पष्ट फोटो प्रयोग गर्नुहोस्।",
+  upT:"फोटो अपलोड",drag:"पातको फोटो यहाँ तानेर छोड्नुहोस्",or:"वा छान्न थिच्नुहोस् • JPG, PNG, WEBP",paste:"Ctrl+V ले पनि फोटो टाँस्न सकिन्छ",
+  tipsT:"राम्रो नतिजाका लागि:",tip1:"🍃 फ्रेममा एउटै पात भर्नुहोस्",tip2:"☀️ समान उज्यालो, गाढा छाया नपरोस्",tip3:"🧾 सादा पृष्ठभूमि (कागज, हात वा टेबल)",
+  resT:"जाँचको नतिजा",clear:"हटाउनुहोस्",loading:"तपाईंको पात जाँच हुँदैछ...",analyzeBtn:"🔬 पात जाँच्नुहोस्",checking:"जाँच हुँदैछ...",
+  howBadge:"✨ कसरी काम गर्छ",howT:"फोटोदेखि रोग पहिचानसम्म",
+  f1t:"पातको फोटो राख्नुहोस्",f1d:"फोटो छान्नुहोस् वा छोड्नुहोस्। यो यही सर्भरमा मात्र जान्छ।",
+  f2t:"CNN ले पात पढ्छ",f2d:"हामीले आफैँ तालिम दिएको न्युरल नेटवर्कले पातलाई चिनिएका बाली रोगसँग तुलना गर्छ।",
+  f3t:"रोग र उपाय पाउनुहोस्",f3d:"रोग, मोडेल कति निश्चित छ र के गर्ने — आफ्नै भाषामा हेर्नुहोस्।",
+  empty:"पातको फोटो राखेर जाँच्नुहोस् थिच्नुहोस्। रोग र उपाय यहाँ देखिन्छ।",notRec:"पात चिनिएन",
+  unknown:"यो आलु, गोलभेडा वा भेडे खुर्सानीको पात जस्तो देखिएन, वा मोडेल निश्चित छैन। एउटा पातको स्पष्ट नजिकको फोटो राख्नुहोस्।",
+  confidence:"विश्वसनीयता",plant:"बिरुवा",disease:"रोग",status:"अवस्था",healthy:"स्वस्थ",diseased:"रोगी",
+  advice:"के गर्ने",other:"अन्य सम्भावना",note:"यो AI को सुझाव मात्र हो। औषधि छर्कनु अघि नजिकको कृषि कार्यालयसँग पुष्टि गर्नुहोस्।",
+  done:"जाँच सम्पन्न भयो",failed:"जाँच असफल भयो",badFile:"कृपया फोटो फाइल (JPG, PNG वा WEBP) छान्नुहोस्।"},
+ hi:{authTitle:"एग्रोविज़न में आपका स्वागत है",authSub:"पत्ती जाँचने और नतीजे सहेजने के लिए लॉग इन करें।",login:"लॉग इन",register:"खाता बनाएँ",
+  name:"पूरा नाम",email:"ईमेल",password:"पासवर्ड (6 या अधिक अक्षर)",logout:"लॉग आउट",
+  e_login:"ईमेल या पासवर्ड गलत है।",e_exists:"यह ईमेल पहले से पंजीकृत है। लॉग इन करें।",
+  e_invalid:"विवरण जाँचें। पासवर्ड में 6 या अधिक अक्षर होने चाहिए।",e_net:"कुछ गड़बड़ हुई। फिर से कोशिश करें।",
+  nav1:"पत्ती विश्लेषण",nav2:"यह कैसे काम करता है",badge:"पौधों की सेहत की जानकारी",tag:"फसल की सेहत साफ़ देखें।",
+  desc:"पत्ती की फोटो से बीमारी की साफ़ जाँच, भरोसे का स्तर और अगला कदम पाएँ। मिर्च, आलू और टमाटर की फसलों के लिए बनाया गया।",
+  cta1:"पत्ती जाँचें",cta2:"यह कैसे काम करता है",s1:"3 फसलें",s1l:"मिर्च · आलू · टमाटर",s2:"3 भाषाएँ",s2l:"English · नेपाली · हिन्दी",s3:"अपने सर्वर पर",s3l:"कोई बाहरी API नहीं",
+  secBadge:"🔬 पत्ती विश्लेषण",secTitle:"फोटो डालकर जाँचें",secDesc:"सादे बैकग्राउंड पर एक पत्ती की साफ़ फोटो इस्तेमाल करें।",
+  upT:"फोटो अपलोड",drag:"पत्ती की फोटो यहाँ खींचकर छोड़ें",or:"या चुनने के लिए क्लिक करें • JPG, PNG, WEBP",paste:"Ctrl+V से भी फोटो चिपका सकते हैं",
+  tipsT:"बेहतर नतीजे के लिए:",tip1:"🍃 फ्रेम में एक ही पत्ती रखें",tip2:"☀️ समान रोशनी, गहरी छाया न हो",tip3:"🧾 सादा बैकग्राउंड (कागज़, हाथ या मेज़)",
+  resT:"जाँच के नतीजे",clear:"साफ़ करें",loading:"आपकी पत्ती की जाँच हो रही है...",analyzeBtn:"🔬 पत्ती जाँचें",checking:"जाँच हो रही है...",
+  howBadge:"✨ यह कैसे काम करता है",howT:"फोटो से बीमारी की पहचान तक",
+  f1t:"पत्ती की फोटो डालें",f1d:"फोटो चुनें या छोड़ें। यह सिर्फ़ इसी सर्वर पर जाती है।",
+  f2t:"CNN पत्ती को पढ़ता है",f2d:"हमारा खुद प्रशिक्षित न्यूरल नेटवर्क पत्ती की तुलना जानी-पहचानी फसल बीमारियों से करता है।",
+  f3t:"बीमारी और उपाय पाएँ",f3d:"बीमारी, मॉडल कितना निश्चित है और क्या करना है — अपनी भाषा में देखें।",
+  empty:"पत्ती की फोटो डालकर जाँचें दबाएँ। बीमारी और उपाय यहाँ दिखेंगे।",notRec:"पत्ती पहचानी नहीं गई",
+  unknown:"यह आलू, टमाटर या शिमला मिर्च की पत्ती जैसी नहीं दिखती, या मॉडल निश्चित नहीं है। एक पत्ती की साफ़ नज़दीकी फोटो डालें।",
+  confidence:"भरोसा",plant:"पौधा",disease:"बीमारी",status:"स्थिति",healthy:"स्वस्थ",diseased:"रोगग्रस्त",
+  advice:"क्या करें",other:"अन्य संभावनाएँ",note:"यह केवल AI की सलाह है। दवा छिड़कने से पहले नजदीकी कृषि कार्यालय से पुष्टि करें।",
+  done:"जाँच पूरी हुई",failed:"जाँच विफल रही",badFile:"कृपया फोटो फ़ाइल (JPG, PNG या WEBP) चुनें।"}
+};
+
+/* ============ helpers ============ */
+const $ = (id) => document.getElementById(id);
+const JSONH = { 'Content-Type': 'application/json' };
+const zone = $('upload-zone'), fileInput = $('file-input'), previewBox = $('image-preview'), previewImg = $('preview-img'),
+      analyzeBtn = $('analyze-btn'), content = $('results-content'), overlay = $('loading-overlay');
+let lang = localStorage.lang || 'en', token = localStorage.token || '', mode = 'login', last = null, currentFile = null;
+const t = (k) => (TX[lang] && TX[lang][k]) || TX.en[k] || k;
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function toast(msg, type = 'success') {
+  const el = document.createElement('div');
+  el.className = 'toast toast-' + type; el.textContent = msg; el.onclick = () => el.remove();
+  $('toast-container').appendChild(el); setTimeout(() => el.remove(), 3500);
+}
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  $('lang').value = lang;
+  document.querySelectorAll('[data-i]').forEach((e) => { e.textContent = t(e.dataset.i); });
+  $('auth-submit').textContent = t(mode);
+  if (last) render(last); else if (content.querySelector('.empty-state')) showEmpty();
+}
+function setLang(l, save = true) {
+  lang = l; localStorage.lang = l; applyLang();
+  if (save && token) api('/api/language', { method:'PUT', headers:JSONH, body:JSON.stringify({ language:l }) }).catch(() => {});
+}
+$('lang').addEventListener('change', (e) => setLang(e.target.value));
+
+async function api(p, o = {}) {
+  o.headers = { ...(o.headers || {}), Authorization: 'Bearer ' + token };
+  const r = await fetch(p, o);
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) {
+    if (r.status === 401 && token && !p.startsWith('/api/login')) logout(false);
+    const e = new Error(d.detail || 'error'); e.status = r.status; throw e;
+  }
+  return d;
+}
+
+/* ============ login / register ============ */
+function setMode(m) {
+  mode = m; $('auth-error').textContent = '';
+  $('name-box').style.display = m === 'register' ? 'block' : 'none';
+  $('tab-login').className = 'btn btn-sm ' + (m === 'login' ? 'btn-secondary' : 'btn-ghost');
+  $('tab-reg').className = 'btn btn-sm ' + (m === 'register' ? 'btn-secondary' : 'btn-ghost');
+  $('a-pw').autocomplete = m === 'login' ? 'current-password' : 'new-password';
+  $('auth-submit').textContent = t(m);
+}
+$('tab-login').onclick = () => setMode('login');
+$('tab-reg').onclick = () => setMode('register');
+
+$('auth-form').addEventListener('submit', async (e) => {
+  e.preventDefault(); $('auth-error').textContent = '';
+  const body = { email:$('a-email').value.trim(), password:$('a-pw').value, name:$('a-name').value.trim(), language:lang };
+  try {
+    const d = await api('/api/' + mode, { method:'POST', headers:JSONH, body:JSON.stringify(body) });
+    token = d.token; localStorage.token = token; enter(d.user);
+  } catch (x) {
+    $('auth-error').textContent = t(x.status === 409 ? 'e_exists' : x.status === 401 ? 'e_login' : x.status === 400 ? 'e_invalid' : 'e_net');
+  }
+});
+
+function enter(u) {
+  $('auth-overlay').style.display = 'none'; $('logout-btn').style.display = 'inline-flex';
+  lang = u.language || lang; localStorage.lang = lang; applyLang();
+}
+function logout(call = true) {
+  if (call && token) api('/api/logout', { method:'POST' }).catch(() => {});
+  token = ''; localStorage.removeItem('token'); last = null;
+  $('auth-overlay').style.display = 'flex'; $('logout-btn').style.display = 'none'; removeImage();
+}
+$('logout-btn').addEventListener('click', () => logout());
+
+/* ============ upload ============ */
+function showEmpty() {
+  last = null;
+  content.innerHTML = `<div class="empty-state"><div class="empty-icon">🌿</div><p>${t('empty')}</p></div>`;
+}
+function setFile(f) {
+  if (!f || !f.type.startsWith('image/')) { toast(t('badFile'), 'error'); return; }
+  currentFile = f; previewImg.src = URL.createObjectURL(f);
+  zone.style.display = 'none'; previewBox.style.display = 'block'; analyzeBtn.disabled = false; showEmpty();
+}
+function removeImage() {
+  currentFile = null; fileInput.value = ''; previewImg.src = '';
+  previewBox.style.display = 'none'; zone.style.display = 'block'; analyzeBtn.disabled = true; showEmpty();
+}
+zone.addEventListener('click', () => fileInput.click());
+zone.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); } });
+zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
+zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+zone.addEventListener('drop', (e) => { e.preventDefault(); zone.classList.remove('dragover'); setFile(e.dataTransfer.files[0]); });
+fileInput.addEventListener('change', () => setFile(fileInput.files[0]));
+$('remove-btn').addEventListener('click', removeImage);
+$('clear-btn').addEventListener('click', showEmpty);
+document.addEventListener('paste', (e) => {
+  const item = [...(e.clipboardData?.items || [])].find((i) => i.type.startsWith('image/'));
+  if (item) setFile(item.getAsFile());
+});
+
+/* ============ results ============ */
+function render(d) {
+  last = d;
+  if (!d.recognized) {
+    content.innerHTML = `<div class="notice notice-warn"><b>${t('notRec')}</b>${t('unknown')}</div>`; return;
+  }
+  const n = (o) => esc(o[lang]);
+  content.innerHTML = `
+    <div class="result-header">
+      <div class="result-plant-name">${n(d.plant)}<small>${n(d.disease)}</small></div>
+      <span class="status-badge ${d.healthy ? 'status-healthy' : 'status-diseased'}">${t(d.healthy ? 'healthy' : 'diseased')}</span>
+    </div>
+    <div class="confidence-label"><span>${t('confidence')}</span><span>${esc(d.confidence)}%</span></div>
+    <div class="confidence-track"><div class="confidence-fill" id="conf-fill"></div></div>
+    <div class="info-grid">
+      <div class="info-item"><div class="info-label">${t('plant')}</div><div class="info-value">${n(d.plant)}</div></div>
+      <div class="info-item"><div class="info-label">${t('disease')}</div><div class="info-value">${n(d.disease)}</div></div>
+      <div class="info-item"><div class="info-label">${t('status')}</div><div class="info-value">${t(d.healthy ? 'healthy' : 'diseased')}</div></div>
+    </div>
+    <div class="detail-block"><h4>${t('advice')}</h4>${n(d.tip)}</div>
+    <div class="detail-block"><h4>${t('other')}</h4><ul class="alt-list">
+      ${d.top_3.map((x) => `<li><span>${n(x.plant)}: ${n(x.disease)}</span><span class="alt-pct">${esc(x.confidence)}%</span></li>`).join('')}
+    </ul></div>
+    <p class="disclaimer">${t('note')}</p>`;
+  requestAnimationFrame(() => { const f = $('conf-fill'); if (f) f.style.width = Math.min(100, Number(d.confidence) || 0) + '%'; });
+}
+
+async function analyzeImage() {
+  if (!currentFile) return;
+  const fd = new FormData(); fd.append('file', currentFile);
+  analyzeBtn.disabled = true; analyzeBtn.textContent = t('checking'); overlay.style.display = 'flex';
+  try {
+    const d = await api('/api/predict', { method:'POST', body:fd });
+    render(d); if (d.recognized) toast(t('done'));
+  } catch (e) {
+    if (e.status !== 401) { content.innerHTML = `<div class="notice notice-error"><b>${t('failed')}</b>${t('e_net')}</div>`; toast(t('failed'), 'error'); }
+  } finally {
+    overlay.style.display = 'none'; analyzeBtn.disabled = !currentFile; analyzeBtn.textContent = t('analyzeBtn');
+  }
+}
+analyzeBtn.addEventListener('click', analyzeImage);
+
+/* ============ start ============ */
+const io = new IntersectionObserver((entries) => entries.forEach((en) => {
+  if (en.isIntersecting) { en.target.classList.add('visible'); io.unobserve(en.target); }
+}), { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+setMode('login'); showEmpty(); applyLang();
+if (token) api('/api/me').then(enter).catch(() => logout(false));
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="leaf" x1="15" y1="16" x2="49" y2="45" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B5FFC1"/>
+      <stop offset="1" stop-color="#35D58B"/>
+    </linearGradient>
+    <linearGradient id="frame" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#75FFB5"/>
+      <stop offset="1" stop-color="#44CFA1"/>
+    </linearGradient>
+  </defs>
+  <rect x="1.5" y="1.5" width="61" height="61" rx="17" fill="#0C2119" stroke="#315C43"/>
+  <path d="M21 8H15a5 5 0 0 0-5 5v6M43 8h6a5 5 0 0 1 5 5v6M10 45v6a5 5 0 0 0 5 5h6M54 45v6a5 5 0 0 1-5 5h-6" stroke="url(#frame)" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M31.8 43V27" stroke="#DDFCE6" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M31 34c-8.6-.4-13.7-5.6-13.7-13.3 8.3 0 13.5 4.7 14.5 12.6L31 34Z" fill="url(#leaf)"/>
+  <path d="M33 31.8c.8-8.1 6.1-13.1 14.4-13.1 0 7.8-5.1 13-13.5 13.6l-.9-.5Z" fill="url(#leaf)"/>
+  <path d="M15.5 47.5c5.3-2.5 10.2-3.7 16.5-3.7s11.2 1.2 16.5 3.7M19.5 52.5c3.9-1.4 7.9-2 12.5-2s8.6.6 12.5 2" stroke="#78E9A7" stroke-width="1.6" stroke-linecap="round" opacity=".82"/>
+</svg>
